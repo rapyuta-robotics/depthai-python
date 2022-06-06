@@ -83,7 +83,7 @@ rotate = {
     'rgb'  : args.rotate in ['all', 'rgb'],
     'left' : args.rotate in ['all', 'mono'],
     'right': args.rotate in ['all', 'mono'],
-    'camd' : args.rotate in ['all', 'rgb'],
+    'camd' : args.rotate in ['all', 'mono'],
 }
 
 mono_res_opts = {
@@ -154,6 +154,11 @@ for c in cam_list:
     if rotate[c]:
         cam[c].setImageOrientation(dai.CameraImageOrientation.ROTATE_180_DEG)
     cam[c].setFps(args.fps)
+
+# cam['rgb'] .initialControl.setFrameSyncMode(dai.CameraControl.FrameSyncMode.INPUT)
+cam['left']  .initialControl.setFrameSyncMode(dai.CameraControl.FrameSyncMode.INPUT)
+cam['right'].initialControl.setFrameSyncMode(dai.CameraControl.FrameSyncMode.OUTPUT)
+cam['camd'] .initialControl.setFrameSyncMode(dai.CameraControl.FrameSyncMode.INPUT)
 
 if 0:
     print("=== Using custom camera tuning, and limiting RGB FPS to 10")
