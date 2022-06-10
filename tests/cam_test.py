@@ -155,14 +155,25 @@ for c in cam_list:
         cam[c].setImageOrientation(dai.CameraImageOrientation.ROTATE_180_DEG)
     cam[c].setFps(args.fps)
 
+#cam['rgb']  .initialControl.setFrameSyncMode(dai.CameraControl.FrameSyncMode.OUTPUT)
+cam['left'] .initialControl.setFrameSyncMode(dai.CameraControl.FrameSyncMode.INPUT)
+cam['right'].initialControl.setFrameSyncMode(dai.CameraControl.FrameSyncMode.OUTPUT)
+cam['camd'] .initialControl.setFrameSyncMode(dai.CameraControl.FrameSyncMode.INPUT)
+
 if 0:
     print("=== Using custom camera tuning, and limiting RGB FPS to 10")
     pipeline.setCameraTuningBlobPath("/home/user/Downloads/tuning_color_low_light.bin")
     # TODO: change sensor driver to make FPS automatic (based on requested exposure time)
     cam['rgb'].setFps(10)
 
+# OAK-FFC-4P requires driving GPIO6 high (FSIN_MODE_SELECT) to connect together
+# the A+D FSIN group (4-lane pair) with the B+C group (2-lane pair)
+config = dai.Device.Config()
+config.board.gpio[6] = dai.BoardConfig.GPIO(dai.BoardConfig.GPIO.OUTPUT,
+                                            dai.BoardConfig.GPIO.Level.HIGH)
 # Pipeline is defined, now we can connect to the device
-with dai.Device(pipeline) as device:
+with dai.Device(config) as device:
+    device.startPipeline(pipeline)
     #print('Connected cameras:', [c.name for c in device.getConnectedCameras()])
     print('Connected cameras:')
     for p in device.getConnectedCameraProperties():
