@@ -1,3 +1,4 @@
 [submodule "depthai-core"]
 	path = depthai-core
-	url = ../depthai-core.git
+	url = git@github.com:rapyuta-robotics/depthai-core.git
+	branch = vs/multi_cam
